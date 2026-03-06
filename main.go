@@ -35,6 +35,7 @@ func main() {
 	s.AddTool(tools.NewGetItemTool(feverClient), tools.HandleGetItem(feverClient))
 	s.AddTool(tools.NewMarkItemReadTool(feverClient), tools.HandleMarkItemRead(feverClient))
 	s.AddTool(tools.NewMarkItemUnreadTool(feverClient), tools.HandleMarkItemUnread(feverClient))
+	s.AddTool(tools.NewYoutubeTranscriptTool(), tools.HandleYoutubeTranscript())
 
 	fmt.Fprintf(os.Stderr, "Starting FreshRSS MCP Server...\n")
 	if err := server.ServeStdio(s); err != nil {
