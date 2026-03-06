@@ -10,6 +10,7 @@ This is an MCP (Model Context Protocol) server for FreshRSS written in Go. It pr
 - **Transport**: stdio only (no HTTP server)
 - **API**: FreshRSS Fever API (`/api/fever.php`)
 - **Authentication**: API key (MD5 hash of `username:api_password`)
+- **YouTube Integration**: Uses `github.com/kkdai/youtube/v2` for video transcripts
 
 ## Environment Variables
 
@@ -32,7 +33,8 @@ mcp-freshrss/
 │   ├── feeds.go         # List feeds tool
 │   ├── list_items.go    # List items tool
 │   ├── get_item.go      # Get item tool
-│   └── items.go         # Mark read/unread tools
+│   ├── items.go         # Mark read/unread tools
+│   └── youtube_transcript.go  # YouTube transcript tool
 ├── models/
 │   └── types.go         # Data models for Fever API responses
 └── AGENTS.md            # This file
@@ -82,6 +84,15 @@ Mark a news item as unread.
   - `item_id` (required): The ID of the item to mark as unread
 - **Read-only**: No
 - **API endpoint**: POST with `mark=item&as=unread&id=<item_id>`
+
+### 7. youtube_get_transcript
+Get the transcript of a YouTube video as plain text, optimized for LLM analysis.
+- **Parameters**:
+  - `url` (required): The YouTube video URL or video ID
+  - `language` (optional): Language code for the transcript. Supported values: `en` (English) or `fr` (French). Default: `en`
+- **Returns**: Plain text transcript without timestamps or metadata
+- **Read-only**: Yes
+- **Note**: Not all videos have transcripts. The library supports auto-generated and manual captions. Only newer videos typically have transcripts.
 
 ## Fever API Reference
 
@@ -177,6 +188,8 @@ curl -s -F "api_key=YOUR_API_KEY" 'https://your-freshrss.example.net/api/fever.p
 - The Fever API does not support adding/editing/deleting feeds (only reading)
 - Hot Links feature is not supported by FreshRSS
 - Maximum 50 items returned per request when fetching items
+- YouTube transcripts are not available for all videos (only newer videos typically have transcripts)
+- YouTube transcript tool only supports English ('en') and French ('fr') languages
 
 ## Resources
 
