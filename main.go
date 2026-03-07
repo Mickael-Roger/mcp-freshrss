@@ -35,7 +35,13 @@ func main() {
 	s.AddTool(tools.NewGetItemTool(feverClient), tools.HandleGetItem(feverClient))
 	s.AddTool(tools.NewMarkItemReadTool(feverClient), tools.HandleMarkItemRead(feverClient))
 	s.AddTool(tools.NewMarkItemUnreadTool(feverClient), tools.HandleMarkItemUnread(feverClient))
-	s.AddTool(tools.NewYoutubeTranscriptTool(), tools.HandleYoutubeTranscript())
+
+	if tools.IsYtDlpAvailable() {
+		s.AddTool(tools.NewYoutubeTranscriptTool(), tools.HandleYoutubeTranscript())
+		fmt.Fprintf(os.Stderr, "yt-dlp detected: youtube_get_transcript tool enabled\n")
+	} else {
+		fmt.Fprintf(os.Stderr, "yt-dlp not found: youtube_get_transcript tool disabled\n")
+	}
 
 	fmt.Fprintf(os.Stderr, "Starting FreshRSS MCP Server...\n")
 	if err := server.ServeStdio(s); err != nil {

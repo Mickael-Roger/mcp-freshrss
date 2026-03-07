@@ -10,7 +10,7 @@ This is an MCP (Model Context Protocol) server for FreshRSS written in Go. It pr
 - **Transport**: stdio only (no HTTP server)
 - **API**: FreshRSS Fever API (`/api/fever.php`)
 - **Authentication**: API key (MD5 hash of `username:api_password`)
-- **YouTube Integration**: Uses `github.com/kkdai/youtube/v2` for video transcripts
+- **YouTube Integration**: Uses the `yt-dlp` system command for video transcripts (tool is only exposed when `yt-dlp` is available on the host)
 
 ## Environment Variables
 
@@ -92,7 +92,9 @@ Get the transcript of a YouTube video as plain text, optimized for LLM analysis.
   - `language` (optional): Language code for the transcript. Supported values: `en` (English) or `fr` (French). Default: `en`
 - **Returns**: Plain text transcript without timestamps or metadata
 - **Read-only**: Yes
-- **Note**: Not all videos have transcripts. The library supports auto-generated and manual captions. Only newer videos typically have transcripts.
+- **Availability**: Only registered if `yt-dlp` is found on `PATH` at startup
+- **Implementation**: Runs `yt-dlp --write-auto-sub --skip-download` into a temp directory, then parses the resulting WebVTT file into plain text (strips timestamps, inline timing tags, and deduplicates repeated lines produced by YouTube's auto-caption format)
+- **Note**: Not all videos have transcripts. Only newer videos typically have auto-generated captions.
 
 ## Fever API Reference
 
